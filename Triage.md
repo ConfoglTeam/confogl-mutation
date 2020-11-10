@@ -139,6 +139,7 @@ botpopstop.smx // Bot don't pop pills pls
 ```
 
 ## Readyup/tournament/spec
+```
 readyup.smx
 caster_addons.smx
 caster_assister.smx
@@ -148,6 +149,7 @@ spechud.smx
 cfg_motd.smx
 sm plugins load match_vote.smx
 specrates.smx
+```
 
 
 ## Cut plugins
