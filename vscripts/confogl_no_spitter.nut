@@ -1,6 +1,5 @@
 lastSpitterLimit <- Convars.GetFloat("z_spitter_limit")
 
-// TODO: These game events don't capture AI tanks getting kicked... let's just poll `IsTankInPlay()`
 function OnGameEvent_tank_spawn( params )
 {
     Msg(format("OnGameEvent_tank_spawn, %d", Director.IsTankInPlay() ? 1 : 0))
@@ -20,6 +19,19 @@ function OnGameEvent_tank_killed( params )
         Convars.SetValue("z_spitter_limit", lastSpitterLimit)
         lastSpitterLimit = 0;
     }
+}
+
+function OnGameEvent_player_team(params)
+{
+	if (params.disconnect && params.isbot && GetPlayerFromUserID(params.userid).GetZombieType() == 8) // Player is a disconnecting bot tank
+	{
+        Msg(format("OnGameEvent_player_team, %d", Director.IsTankInPlay() ? 1 : 0))
+        if (lastSpitterLimit > 0.0) {
+            Msg(format("Resetting Spitter Limit to %f", lastSpitterLimit));
+            Convars.SetValue("z_spitter_limit", lastSpitterLimit)
+            lastSpitterLimit = 0;
+        }
+	}
 }
 
 Msg("No Spitter During Tank: LOADED!\n");
