@@ -105,8 +105,8 @@ function UserConsoleCommand(playerScript, arg) {
   return retVal;
 }
 
+// A callback that is called when all players have spawned and players start to play.
 function OnGameplayStart() {
-  // A callback that is called when all players have spawned and players start to play.
   unPluginHookCallbacks("OnGameplayStart", function (hookFn) {
     hookFn();
   });
@@ -126,7 +126,7 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.AllowFallenSurvivorItem(%s)\n", classname));
     // Default to disallow carrying the classname.
     local retVal = false;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.AllowFallenSurvivorItem", function (hookFn) {
+    g_ModeScript.runPluginHookCallbacks("AllowFallenSurvivorItem", function (hookFn) {
       local res = hookFn(classname);
       // If any plugin returns true, we return true.
       if (res == true) {
@@ -141,12 +141,12 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.AllowWeaponSpawn(%s)\n", classname));
     // Default to allow spawning the classname.
     local retVal = true;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.AllowWeaponSpawn", function (hookFn) {
-    local res = hookFn(classname);
-    // If any plugin returns false, we return false.
-    if (res == false) {
-      return false;
-    }
+    g_ModeScript.runPluginHookCallbacks("AllowWeaponSpawn", function (hookFn) {
+      local res = hookFn(classname);
+      // If any plugin returns false, we return false.
+      if (res == false) {
+        return false;
+      }
     });
     return retVal;
   }
@@ -156,10 +156,10 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.ConvertWeaponSpawn(%s)\n", classname));
     // Default to no conversion.
     local retVal = false;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.ConvertWeaponSpawn", function (hookFn) {
-    local res = hookFn(classname);
-    // If any plugin overrides this function, we return its return value.
-    return res;
+    g_ModeScript.runPluginHookCallbacks("ConvertWeaponSpawn", function (hookFn) {
+      local res = hookFn(classname);
+      // If any plugin overrides this function, we return its return value.
+      return res;
     });
     return retVal;
   }
@@ -169,10 +169,10 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.ConvertZombieClass(%d)\n", infectedClass));
     // Default to no conversion.
     local retVal = 0;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.ConvertZombieClass", function (hookFn) {
-    local res = hookFn(infectedClass);
-    // If any plugin overrides this function, we return its return value.
-    return res;
+    g_ModeScript.runPluginHookCallbacks("ConvertZombieClass", function (hookFn) {
+      local res = hookFn(infectedClass);
+      // If any plugin overrides this function, we return its return value.
+      return res;
     });
     return retVal;
   }
@@ -183,10 +183,10 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.GetDefaultItem(%d)\n", index));
     // Default to ending iteration.
     local retVal = 0;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.GetDefaultItem", function (hookFn) {
-    local res = hookFn(index);
-    // If any plugin overrides this function, we return its return value.
-    return res;
+    g_ModeScript.runPluginHookCallbacks("GetDefaultItem", function (hookFn) {
+      local res = hookFn(index);
+      // If any plugin overrides this function, we return its return value.
+      return res;
     });
     // We don't want to take away the default single pistol if no plugins override this function.
     if (index == 0) {
@@ -201,12 +201,12 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.ShouldAvoidItem(%s)\n", classname));
     // Default to no avoidance.
     local retVal = false;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.ShouldAvoidItem", function (hookFn) {
-    local res = hookFn(classname);
-    // If any plugin returns false, we return false.
-    if (res == false) {
-      return false;
-    }
+    g_ModeScript.runPluginHookCallbacks("ShouldAvoidItem", function (hookFn) {
+      local res = hookFn(classname);
+      // If any plugin returns false, we return false.
+      if (res == false) {
+        return false;
+      }
     });
     return retVal;
   }
@@ -216,12 +216,12 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.ShouldPlayBossMusic(%d)\n", index));
     // Default to playing boss music.
     local retVal = true;
-    g_ModeScript.runPluginHookCallbacks("DirectorOptions.ShouldPlayBossMusic", function (hookFn) {
-    local res = hookFn(index);
-    // If any plugin returns false, we return false.
-    if (res == false) {
-      return false;
-    }
+    g_ModeScript.runPluginHookCallbacks("ShouldPlayBossMusic", function (hookFn) {
+      local res = hookFn(index);
+      // If any plugin returns false, we return false.
+      if (res == false) {
+        return false;
+      }
     });
     return retVal;
   }
@@ -235,6 +235,14 @@ function runPluginHookCallbacks(hookName, cb) {
       local fn = pluginScopes[idx][hookName];
       if ( typeof (fn) == "function" ) {
         cb(fn);
+      }
+    }
+    else if ("DirectorOptions" in pluginScopes[idx]) {
+      if (hookName in pluginScopes[idx]["DirectorOptions"]) {
+        local fn = pluginScopes[idx]["DirectorOptions"][hookName];
+        if ( typeof (fn) == "function" ) {
+          cb(fn);
+        }
       }
     }
   }
