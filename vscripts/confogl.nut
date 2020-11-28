@@ -193,8 +193,8 @@ DirectorOptions <- {
     if (res == false) {
       return false;
     }
-	});
-	return retVal;
+    });
+    return retVal;
   }
   // bool ShouldPlayBossMusic(index)
   // Returns true or false if the music index is allowed to play. 
@@ -208,8 +208,8 @@ DirectorOptions <- {
     if (res == false) {
       return false;
     }
-	});
-	return retVal;
+    });
+    return retVal;
   }
 }
 
