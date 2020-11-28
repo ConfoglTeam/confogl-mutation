@@ -21,9 +21,9 @@ function AllowBash(basher, bashee) {
     if (res == ALLOW_BASH_NONE) {
       retVal = ALLOW_BASH_NONE;
     }
-	else if(res == ALLOW_BASH_PUSHONLY && retVal == ALLOW_BASH_ALL) {
-	  retVal = ALLOW_BASH_PUSHONLY;
-	}
+    else if(res == ALLOW_BASH_PUSHONLY && retVal == ALLOW_BASH_ALL) {
+      retVal = ALLOW_BASH_PUSHONLY;
+    }
   });
   return retVal;
 }
@@ -35,7 +35,7 @@ function AllowTakeDamage(damageTable) {
   local retVal = true;
   runPluginHookCallbacks("AllowTakeDamage", function (hookFn) {
     local res = hookFn(damageTable);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
@@ -51,7 +51,7 @@ function BotQuery(queryflag, entity, defaultvalue) {
   local retVal = true;
   runPluginHookCallbacks("BotQuery", function (hookFn) {
     local res = hookFn(queryflag, entity, defaultvalue);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
@@ -67,7 +67,7 @@ function CanPickupObject(object) {
   local retVal = false;
   runPluginHookCallbacks("CanPickupObject", function (hookFn) {
     local res = hookFn(object);
-	// If any plugin returns true, we return true.
+    // If any plugin returns true, we return true.
     if (res == true) {
       return true;
     }
@@ -82,7 +82,7 @@ function InterceptChat(message, speaker) {
   local retVal = true;
   runPluginHookCallbacks("InterceptChat", function (hookFn) {
     local res = hookFn(message, speaker);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
@@ -97,7 +97,7 @@ function UserConsoleCommand(playerScript, arg) {
   local retVal = true;
   runPluginHookCallbacks("UserConsoleCommand", function (hookFn) {
     local res = hookFn(playerScript, arg);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
@@ -110,16 +110,16 @@ DirectorOptions <- {
   // Returns true or false if Fallen Survivors are allowed to carry the given classname.
   function AllowFallenSurvivorItem(classname) {
     Msg(format("DirectorOptions.AllowFallenSurvivorItem(%s)\n", classname));
-	// Default to disallow carrying the classname.
+    // Default to disallow carrying the classname.
     local retVal = false;
-	runPluginHookCallbacks("DirectorOptions.AllowFallenSurvivorItem", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.AllowFallenSurvivorItem", function (hookFn) {
       local res = hookFn(classname);
-	  // If any plugin returns true, we return true.
+      // If any plugin returns true, we return true.
       if (res == true) {
         return true;
       }
-	});
-	return retVal;
+    });
+    return retVal;
   }
   // bool AllowWeaponSpawn(string classname)
   // Returns true or false if the given classname is allowed to spawn, used by several mutations.
@@ -127,58 +127,58 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.AllowWeaponSpawn(%s)\n", classname));
     // Default to allow spawning the classname.
     local retVal = true;
-	runPluginHookCallbacks("DirectorOptions.AllowWeaponSpawn", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.AllowWeaponSpawn", function (hookFn) {
     local res = hookFn(classname);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
-	});
-	return retVal;
+    });
+    return retVal;
   }
   // string ConvertWeaponSpawn(string classname)
   // Converts a weapon spawn of given classname to another, used by several mutations.
   function ConvertWeaponSpawn(classname) {
     Msg(format("DirectorOptions.ConvertWeaponSpawn(%s)\n", classname));
-	// Default to no conversion.
+    // Default to no conversion.
     local retVal = false;
-	runPluginHookCallbacks("DirectorOptions.ConvertWeaponSpawn", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.ConvertWeaponSpawn", function (hookFn) {
     local res = hookFn(classname);
-	// If any plugin overrides this function, we return its return value.
-	return res;
-	});
-	return retVal;
+    // If any plugin overrides this function, we return its return value.
+    return res;
+    });
+    return retVal;
   }
   // int ConvertZombieClass(infectedClass)
   // Converts one spawn into another, used by the Taaannnk!! mutation (mutation19.nut).
   function ConvertZombieClass(infectedClass) {
     Msg(format("DirectorOptions.ConvertZombieClass(%d)\n", infectedClass));
-	// Default to no conversion.
+    // Default to no conversion.
     local retVal = 0;
-	runPluginHookCallbacks("DirectorOptions.ConvertZombieClass", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.ConvertZombieClass", function (hookFn) {
     local res = hookFn(infectedClass);
-	// If any plugin overrides this function, we return its return value.
-	return res;
-	});
-	return retVal;
+    // If any plugin overrides this function, we return its return value.
+    return res;
+    });
+    return retVal;
   }
   // string GetDefaultItem(index)
   // Repeatedly called with incrementing indices. 
   // Return a string of a weapon name to make it a default item for survivors, or 0 to end the iteration.
   function GetDefaultItem(index) {
     Msg(format("DirectorOptions.GetDefaultItem(%d)\n", index));
-	// Default to ending iteration.
+    // Default to ending iteration.
     local retVal = 0;
-	runPluginHookCallbacks("DirectorOptions.GetDefaultItem", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.GetDefaultItem", function (hookFn) {
     local res = hookFn(index);
-	// If any plugin overrides this function, we return its return value.
-	return res;
-	});
-	// We don't want to take away the default single pistol if no plugins override this function.
-	if (index == 0) {
-	  return "weapon_pistol"
-	}
-	return retVal;
+    // If any plugin overrides this function, we return its return value.
+    return res;
+    });
+    // We don't want to take away the default single pistol if no plugins override this function.
+    if (index == 0) {
+      return "weapon_pistol"
+    }
+    return retVal;
   }
   // bool ShouldAvoidItem(string classname)
   // To do: Probably a bot related function or spawn related
@@ -187,9 +187,9 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.ShouldAvoidItem(%s)\n", classname));
     // Default to no avoidance.
     local retVal = false;
-	runPluginHookCallbacks("DirectorOptions.ShouldAvoidItem", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.ShouldAvoidItem", function (hookFn) {
     local res = hookFn(classname);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
@@ -202,9 +202,9 @@ DirectorOptions <- {
     Msg(format("DirectorOptions.ShouldPlayBossMusic(%d)\n", index));
     // Default to playing boss music.
     local retVal = true;
-	runPluginHookCallbacks("DirectorOptions.ShouldPlayBossMusic", function (hookFn) {
+    runPluginHookCallbacks("DirectorOptions.ShouldPlayBossMusic", function (hookFn) {
     local res = hookFn(index);
-	// If any plugin returns false, we return false.
+    // If any plugin returns false, we return false.
     if (res == false) {
       return false;
     }
