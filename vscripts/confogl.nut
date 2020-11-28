@@ -105,6 +105,20 @@ function UserConsoleCommand(playerScript, arg) {
   return retVal;
 }
 
+function OnGameplayStart() {
+  // A callback that is called when all players have spawned and players start to play.
+  unPluginHookCallbacks("OnGameplayStart", function (hookFn) {
+    hookFn();
+  });
+}
+
+// Update gets called much like a Think() function.
+function Update() {
+  runPluginHookCallbacks("Update", function (hookFn) {
+    hookFn();
+  });
+}
+
 DirectorOptions <- {
   // bool AllowFallenSurvivorItem(string classname)
   // Returns true or false if Fallen Survivors are allowed to carry the given classname.
