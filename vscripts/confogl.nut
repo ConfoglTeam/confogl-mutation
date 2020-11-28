@@ -37,7 +37,7 @@ function AllowTakeDamage(damageTable) {
     local res = hookFn(damageTable);
     // If any plugin returns false, we return false.
     if (res == false) {
-      return false;
+      retVal = false;
     }
   });
   return retVal;
@@ -53,7 +53,7 @@ function BotQuery(queryflag, entity, defaultvalue) {
     local res = hookFn(queryflag, entity, defaultvalue);
     // If any plugin returns false, we return false.
     if (res == false) {
-      return false;
+      retVal = false;
     }
   });
   return retVal;
@@ -69,7 +69,7 @@ function CanPickupObject(object) {
     local res = hookFn(object);
     // If any plugin returns true, we return true.
     if (res == true) {
-      return true;
+      retVal = true;
     }
   });
   return retVal;
@@ -84,7 +84,7 @@ function InterceptChat(message, speaker) {
     local res = hookFn(message, speaker);
     // If any plugin returns false, we return false.
     if (res == false) {
-      return false;
+      retVal = false;
     }
   });
   return retVal;
@@ -99,7 +99,7 @@ function UserConsoleCommand(playerScript, arg) {
     local res = hookFn(playerScript, arg);
     // If any plugin returns false, we return false.
     if (res == false) {
-      return false;
+      retVal = false;
     }
   });
   return retVal;
@@ -130,7 +130,7 @@ DirectorOptions <- {
       local res = hookFn(classname);
       // If any plugin returns true, we return true.
       if (res == true) {
-        return true;
+        retVal = true;
       }
     });
     return retVal;
@@ -145,7 +145,7 @@ DirectorOptions <- {
       local res = hookFn(classname);
       // If any plugin returns false, we return false.
       if (res == false) {
-        return false;
+        retVal = false;
       }
     });
     return retVal;
@@ -159,7 +159,7 @@ DirectorOptions <- {
     g_ModeScript.runPluginHookCallbacks("ConvertWeaponSpawn", function (hookFn) {
       local res = hookFn(classname);
       // If any plugin overrides this function, we return its return value.
-      return res;
+      retVal = res;
     });
     return retVal;
   }
@@ -172,7 +172,7 @@ DirectorOptions <- {
     g_ModeScript.runPluginHookCallbacks("ConvertZombieClass", function (hookFn) {
       local res = hookFn(infectedClass);
       // If any plugin overrides this function, we return its return value.
-      return res;
+      retVal = res;
     });
     return retVal;
   }
@@ -186,7 +186,7 @@ DirectorOptions <- {
     g_ModeScript.runPluginHookCallbacks("GetDefaultItem", function (hookFn) {
       local res = hookFn(index);
       // If any plugin overrides this function, we return its return value.
-      return res;
+      retVal = res;
     });
     // We don't want to take away the default single pistol if no plugins override this function.
     if (index == 0) {
@@ -205,7 +205,7 @@ DirectorOptions <- {
       local res = hookFn(classname);
       // If any plugin returns false, we return false.
       if (res == false) {
-        return false;
+        retVal = false;
       }
     });
     return retVal;
@@ -220,7 +220,7 @@ DirectorOptions <- {
       local res = hookFn(index);
       // If any plugin returns false, we return false.
       if (res == false) {
-        return false;
+        retVal = false;
       }
     });
     return retVal;
