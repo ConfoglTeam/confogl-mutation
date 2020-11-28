@@ -203,9 +203,9 @@ DirectorOptions <- {
     local retVal = false;
     g_ModeScript.runPluginHookCallbacks("ShouldAvoidItem", function (hookFn) {
       local res = hookFn(classname);
-      // If any plugin returns false, we return false.
-      if (res == false) {
-        retVal = false;
+      // If any plugin returns true, we return true.
+      if (res == true) {
+        retVal = true;
       }
     });
     return retVal;
