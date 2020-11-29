@@ -6,7 +6,7 @@ git:
   depth: 5
 
 install:
-- apt-get-install squirrel3
+- apt-get install squirrel3
 
 stages:
   - test
