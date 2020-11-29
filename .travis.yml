@@ -1,0 +1,18 @@
+# https://docs.travis-ci.com/user/job-lifecycle
+
+language: minimal
+
+git:
+  depth: 5
+
+install:
+- apt-get-install squirrel3
+
+stages:
+  - test
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - squirrel test.nut
