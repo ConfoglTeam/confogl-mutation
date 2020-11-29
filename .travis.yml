@@ -5,8 +5,8 @@ language: minimal
 git:
   depth: 5
 
-install:
-- apt-get install squirrel3
+before_install:
+- sudo apt-get -y install squirrel3
 
 stages:
   - test
