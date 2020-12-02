@@ -21,4 +21,4 @@ jobs:
         - squirrel -c vscripts/confogl.nut
     - stage: test
       script:
-        - squirrel test.nut
+        - ./test.sh
