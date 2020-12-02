@@ -11,10 +11,14 @@ before_install:
 - sudo apt-get -y install squirrel3
 
 stages:
+  - build
   - test
 
 jobs:
   include:
+    - stage: build
+      script:
+        - squirrel -c vscripts/confogl.nut
     - stage: test
       script:
-        - squirrel test.nut
+        - ./test.sh
