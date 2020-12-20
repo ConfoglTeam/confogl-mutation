@@ -1,7 +1,9 @@
 
 
 function p(s) { ::print(s+"\n"); }
-function Msg(s) { ::print(s); }
+function Msg(s) {
+  // ::print(s);
+}
 function IncludeScript(path, env)
 {
 	(loadfile(path,true).bindenv(env))();
@@ -131,8 +133,74 @@ function Time() { return g_Time.GetCurrentTime(); }
 function NextTick() { g_Time.NextTick(); }
 function IncrementTime(dt) { g_Time.IncrementTime(dt); }
 
-::Convars <- {
-  function GetFloat(cvar) {
-    return 1.0;
+
+class Convar {
+  m_flValue = -1.0;
+  m_strValue = "";
+  m_bValue = false;
+  constructor(val) {
+    SetValue(val);
   }
+
+  function SetValue(val) {
+    switch(typeof val) {
+      case "string": {
+        m_strValue = val;
+        try {
+          m_flValue = val.tofloat();
+        } catch(e) {
+          m_flValue = -1.0;
+        }
+        m_bValue = m_flValue > 1.0 || (m_flValue < 0 && m_strValue != "");
+        break;
+      }
+      case "integer":
+      case "float": {
+        m_flValue = val.tofloat();
+        m_strValue = val.tostring()
+        m_bValue = val != 0;
+        break;
+      }
+      case "bool": {
+        m_bValue = val;
+        m_flValue = val ? 1.0 : 0.0;
+        m_strValue = m_flValue.tostring();
+        break;
+      }
+    }
+  }
+  function GetFloat() { return m_flValue; }
+  function GetString() { return m_strValue; }
+  function GetBool() { return m_bValue; }
+}
+
+local _getInitialCvars = function () {
+  return {
+    z_spitter_limit = Convar(1.0)
+  };
+}
+::Convars <- {
+  _cvars = _getInitialCvars()
+  function GetFloat(cvar) {
+    return _cvars[cvar].GetFloat();
+  }
+  function GetString(cvar) {
+    return _cvars[cvar].GetString();
+  }
+  function SetValue(cvar, value) {
+    return _cvars[cvar].SetValue(value)
+  }
+}
+
+::FireGameEvent <- function (eventName, params) {
+  EventScopes.map(function (scope) {
+    local slot = "OnGameEvent_" + eventName;
+    if(!(slot in scope)) {
+      p("Unused game event " + slot + "\n")
+      return;
+    }
+    if (typeof scope[slot] == "function") {
+      scope[slot](params);
+    }
+  });
 }
