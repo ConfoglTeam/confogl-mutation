@@ -1,15 +1,23 @@
-local isGauntletFinale = false;
-local allowDamageTimestampTable = {};
-local hittableDamage = 100;
-local hittableImmunityTime = 1.2;
+local g_isGauntletFinale = false;
+local g_allowDamageTimestampTable = {};
+local HITTABLE_DAMAGE = 100;
+local HITTABLE_IMMUNITY_TIME = 1.2;
 
- // finale_start doesn't fire for Gauntlet finales, but this does. We can't use OnGameplayStart(),
- // because the trigger_finale does not exist until after the initial radio conversation.
+function OnGameplayStart()
+{
+    g_isGauntletFinale = false;
+}
+
+/*
+finale_start doesn't fire for Gauntlet finales, but this does. We use this instead of OnGameplayStart(),
+because the trigger_finale does not exist until after the initial radio conversation,
+and also because hittables do normal damage until this point.
+*/
 function OnGameEvent_finale_radio_start(params)
 {
     if (NetProps.GetPropInt(Entities.FindByClassname(null, "trigger_finale"), "m_type") == 1)
     {
-        isGauntletFinale = true;
+        g_isGauntletFinale = true;
     }
 }
 
@@ -19,50 +27,46 @@ function AllowTakeDamage(damageTable)
     {
         return true;
     }
-    else if (!damageTable.Attacker.IsPlayer() || !damageTable.Victim.IsPlayer())
+    if (!damageTable.Attacker.IsPlayer() || !damageTable.Victim.IsPlayer())
     {
         return true;
     }
 
-    if (damageTable.Inflictor != null)
+    local inflictorClassname = damageTable.Inflictor.GetClassname();
+    if (inflictorClassname == "prop_physics" || inflictorClassname == "prop_car_alarm")
     {
-        local inflictorClassname = damageTable.Inflictor.GetClassname();
-        if (inflictorClassname == "prop_physics" || inflictorClassname == "prop_car_alarm")
+        if (damageTable.Attacker.GetZombieType() == 8) // Attacker is a Tank.
         {
-            if (damageTable.Attacker.GetZombieType() == 8) // Attacker is a Tank.
+            if (damageTable.Attacker == damageTable.Victim)
             {
-                if (damageTable.Attacker == damageTable.Victim)
+                return false; // Prevent Tank self-harm.
+            }
+            else if (damageTable.Victim.IsSurvivor())
+            {
+                if (g_isGauntletFinale)
                 {
-                    return false; // Prevent Tank self-harm.
+                    damageTable.DamageDone = HITTABLE_DAMAGE * 4; // Hittable damage on Gauntlet finales is divided by 4 past where this function returns.
                 }
-                else if (damageTable.Victim.IsSurvivor())
+                else
                 {
-                    if (isGauntletFinale)
+                    damageTable.DamageDone = HITTABLE_DAMAGE;
+                }
+                if (damageTable.Victim in g_allowDamageTimestampTable)
+                {
+                    if ((g_allowDamageTimestampTable[damageTable.Victim] - Time()) > 0.0)
                     {
-                        damageTable.DamageDone = hittableDamage * 4; // Hittable damage on Gauntlet finales is divided by 4 past where this function returns.
+                        return false; // Not enough time has passed, prevent this damage.
                     }
                     else
                     {
-                        damageTable.DamageDone = hittableDamage;
+                        g_allowDamageTimestampTable[damageTable.Victim] <- (Time() + HITTABLE_IMMUNITY_TIME)
+                        return true;
                     }
-                    if (damageTable.Victim in allowDamageTimestampTable)
-                    {
-                        if ((allowDamageTimestampTable[damageTable.Victim] - Time()) > 0.0)
-                        {
-                            return false; // Not enough time has passed, prevent this damage.
-                        }
-                        else
-                        {
-                            allowDamageTimestampTable[damageTable.Victim] <- (Time() + hittableImmunityTime)
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        allowDamageTimestampTable[damageTable.Victim] <- (Time() + hittableImmunityTime)
-
-                        return true; // Allow this damage and prevent damage for hittableImmunityTime seconds.
-                    }
+                }
+                else
+                {
+                    g_allowDamageTimestampTable[damageTable.Victim] <- (Time() + HITTABLE_IMMUNITY_TIME)
+                    return true; // Allow this damage and prevent damage for HITTABLE_IMMUNITY_TIME seconds.
                 }
             }
         }
