@@ -16,9 +16,9 @@ function OnGameEvent_finale_radio_start(params)
 function AllowTakeDamage(damageTable)
 {
     if (!damageTable.Attacker.IsValid() || !damageTable.Inflictor.IsValid() || !damageTable.Victim.IsValid())
-	{
-		return true;
-	}
+    {
+        return true;
+    }
     else if (!damageTable.Attacker.IsPlayer() || !damageTable.Victim.IsPlayer())
     {
         return true;
