@@ -259,6 +259,7 @@ function LoadPlugin(name) {
 
 
 LoadPlugin("confogl_no_spitter");
+LoadPlugin("confogl_hittable_control");
 
 // Msg(format("ModeScript = this? %s\n", g_ModeScript == this ? "true" : "false"));
 // Msg(format("ChallengeScript = this? %s\n", ::DirectorScript.MapScript.ChallengeScript == this ? "true" : "false"));
